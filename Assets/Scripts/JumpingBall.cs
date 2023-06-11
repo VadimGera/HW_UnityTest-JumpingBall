@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class JumpingBall : MonoBehaviour
 {
-    public float jumpForce = 5f;
-    public float period = 0.5f;
-
     private Rigidbody rb;
     private float initialHeight;
-    private bool isJumping;
 
     private void Start()
     {
@@ -17,34 +15,22 @@ public class JumpingBall : MonoBehaviour
         initialHeight = transform.position.y;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
-        {
-            Jump();
-        }
-    }
-
     public void Jump()
     {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        isJumping = true;
-        Invoke("StopJump", period);
+        rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
     }
 
-    private void StopJump()
+    private void Update()
     {
-        isJumping = false;
-    }
-
-    private void FixedUpdate()
-    {
-        if (isJumping)
+        // Если прошло 0.5 секунды после прыжка, проверяем высоту
+        if (Time.time - initialHeight > 0.5f)
         {
             float currentHeight = transform.position.y;
             float jumpHeight = currentHeight - initialHeight;
-            Debug.Log("Jump height: " + jumpHeight);
+
+            Debug.Log("Jump Height: " + jumpHeight);
         }
     }
 }
+
 
