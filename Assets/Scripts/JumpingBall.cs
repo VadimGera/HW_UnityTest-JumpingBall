@@ -4,37 +4,38 @@ using UnityEngine;
 
 
 
-namespace Assets.Scripts
+public class JumpingBall : MonoBehaviour
 {
+    public Rigidbody rb;
+    public float initialHeight;
+    public float jumpHeight;
 
-    public class JumpingBall : MonoBehaviour
+    public void Start()
     {
-        private Rigidbody rb;
-        private float initialHeight;
+        rb = GetComponent<Rigidbody>();
+        initialHeight = transform.position.y;
+    }
 
-        private void Start()
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            rb = GetComponent<Rigidbody>();
-            initialHeight = transform.position.y;
-        }
-
-        public void Jump()
-        {
-            rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
-        }
-
-        private void Update()
-        {
-            // Если прошло 0.5 секунды после прыжка, проверяем высоту
-            if (Time.time - initialHeight > 0.5f)
-            {
-                float currentHeight = transform.position.y;
-                float jumpHeight = currentHeight - initialHeight;
-
-                Debug.Log("Jump Height: " + jumpHeight);
-            }
+            Jump();
         }
     }
+
+    public void Jump()
+    {
+        rb.AddForce(Vector3.up * 14f, ForceMode.Impulse);
+        Invoke("MeasureHeight", 0.5f);
+    }
+
+    public void MeasureHeight()
+    {
+        jumpHeight = transform.position.y - initialHeight;
+        Debug.Log("Jump height at 0.5s: " + jumpHeight);
+    }
 }
+
 
 

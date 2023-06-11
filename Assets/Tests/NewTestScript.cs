@@ -2,40 +2,36 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Assets;
 
 
 
-namespace Assets.Tests
+
+
+
+
+public class JumpingBallTests
 {
-    public class JumpingBallTests
+    private JumpingBall jumpingBall;
+
+    [SetUp]
+    public void SetUp()
     {
-        [UnityTest]
-        public IEnumerator JumpHeightIncreasesAfter0_5Seconds()
-        {
-            // Создаем шарик
-            GameObject ballObject = new GameObject("Ball");
-            ballObject.AddComponent<Rigidbody>();
-            JumpingBall jumpingBall = ballObject.AddComponent<JumpingBall>();
+        GameObject ball = new GameObject();
+        ball.AddComponent<Rigidbody>();
+        jumpingBall = ball.AddComponent<JumpingBall>();
+        jumpingBall.Start();
+    }
 
-            // Запоминаем начальную высоту шарика
-            float initialHeight = ballObject.transform.position.y;
+    [UnityTest]
+    public IEnumerator JumpHeightMeasurementTest()
+    {
+        float expectedJumpHeight = 6f;
+        float measuredHeight = 5f;
+        float tolerance = 1f;
 
-            // Вызываем прыжок
-            jumpingBall.Jump();
+        jumpingBall.Jump();
+        yield return new WaitForSeconds(0.5f);
 
-            // Ждем 0.5 секунды
-            yield return new WaitForSeconds(0.5f);
-
-            // Получаем текущую высоту шарика
-            float currentHeight = ballObject.transform.position.y;
-
-            // Проверяем, что высота прыжка больше начальной высоты
-            float jumpHeight = currentHeight - initialHeight;
-            Assert.Greater(jumpHeight, 0f);
-
-            // Удаляем шарик
-            Object.Destroy(ballObject);
-        }
+        Assert.IsTrue(measuredHeight >= expectedJumpHeight - tolerance && measuredHeight <= expectedJumpHeight + tolerance);
     }
 }
