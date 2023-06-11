@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class JumpingBall : MonoBehaviour
 {
+    public float jumpForce = 5f;
+    public float period = 0.5f;
+
     private Rigidbody rb;
     private float initialHeight;
     private bool isJumping;
-    private float jumpStartTime;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         initialHeight = transform.position.y;
-        isJumping = false;
     }
 
     private void Update()
@@ -22,21 +23,28 @@ public class JumpingBall : MonoBehaviour
         {
             Jump();
         }
-
-        if (isJumping && Time.time - jumpStartTime >= 0.5f)
-        {
-            isJumping = false;
-            float currentHeight = transform.position.y;
-            float jumpHeight = currentHeight - initialHeight;
-            Debug.Log("Jump height: " + jumpHeight);
-        }
     }
 
     public void Jump()
     {
-        rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         isJumping = true;
-        jumpStartTime = Time.time;
+        Invoke("StopJump", period);
+    }
+
+    private void StopJump()
+    {
+        isJumping = false;
+    }
+
+    private void FixedUpdate()
+    {
+        if (isJumping)
+        {
+            float currentHeight = transform.position.y;
+            float jumpHeight = currentHeight - initialHeight;
+            Debug.Log("Jump height: " + jumpHeight);
+        }
     }
 }
 
